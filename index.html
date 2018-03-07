@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8"/>
+    <title>Form validation problem</title>
+    <style>
+
+        /* I've just relied on vanilla css to to the work here, with a few fonts brought in from Google just to make things a little more pretty.
+            I've taken the approach that a nice, self contained file trumps a collection of things 
+         */
+
+        * {
+            box-sizing: border-box;
+        }
+        
+        body {
+            background-color: #fff3f3;
+            color: #333;
+        }
+
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Oswald', Arial, Helvetica, sans-serif;
+            line-height: 1.25;
+            text-transform: uppercase;
+            font-weight: 300;
+            letter-spacing: 1px;
+        }
+
+        p {
+            font-family: 'Quattrocento', serif;
+            line-height: 1.25;
+            padding-bottom: 15px;
+        }
+
+        .wrapper {
+            max-width: 600px;
+            margin: 60px auto;
+
+        }
+
+        fieldset {
+            border: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        /* This is actually a class that's not a form label */
+        .label {
+            display: block;
+            font-size: 16px;
+            padding-bottom: 10px;
+        }
+
+        label,
+        input {
+            display: block;
+        }
+
+        label.error {
+            padding-top: 10px;
+        }
+
+        input[type="text"],
+        input[type="textarea"],
+        input[type="email"],
+        input[type="password"] {
+            width: 100%;
+            border: 1px solid #333;
+            padding: 10px;
+            font-size: 20px;
+            line-height: 1.25;
+            font-family: 'Quattrocento', serif;
+        }
+
+        select {
+            background: #fff;
+            width: 100%;
+            padding: 10px;
+            font-size: 16px;
+            line-height: 1;
+            border: 1px solid #333;
+            border-radius: 0;
+            height: 34px;
+            appearance: none;
+            -webkit-appearance: none;
+            font-family: 'Quattrocento', serif;
+            min-height: 47px;
+            cursor: pointer;
+        }       
+        /* This is to hide the input checkbox off the page - this relies on the fact that a click on the label will activate the checked functionality */
+        input[type="checkbox"] {
+            overflow: hidden;
+            left: -9999px;
+            position: absolute;
+        }
+
+        input[type="checkbox"] + label {
+           display: inline;
+           position: relative;
+           padding-right: 25px;
+           margin-right: 20px;
+           cursor: pointer;
+           transition: all .3s ease;
+        }
+
+        input[type="checkbox"] + label:before {
+            content: ' ';
+            width: 15px;
+            height: 15px;
+            background: #fff;
+            position: absolute;
+            top: 50%;
+            margin-top: -7.5px;
+            right: 0;
+            border: 1px solid #333;
+            transition: background-color .3s ease, border-radius .3s ease;
+            border-radius: 0;
+        }
+
+        input[type="checkbox"]:checked + label:before {
+            background: #333;
+            border-radius: 50%;
+        }
+
+        .error input[type="checkbox"] + label {
+            color: #333;
+        }
+
+        input[type="submit"] {
+            border: none;
+            font-family: 'Oswald', Arial, Helvetica, sans-serif;
+            background: #333;
+            color: #fff;
+            font-size: 16px;
+            line-height: 1.25;
+            padding: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: background-color .3s ease-in-out;
+            cursor: pointer;
+        }
+
+         input[type="submit"]:hover {
+             background-color: #111;
+         }
+
+    
+        /*
+            -------------------------------------------------------------------
+            Error states
+            -------------------------------------------------------------------
+
+            An error class to forms that fail your validation:
+
+            <p class='error'>
+                <label for='field'></label>
+                <input id='field' type='text' value='foo'>
+            </p>
+        */
+
+        
+        .error > input,
+        .error > label {
+            color: red;
+        }
+
+        .error > input {
+            border-color: red;
+        }
+
+    </style>
+    <link href="https://fonts.googleapis.com/css?family=Oswald:300|Quattrocento" rel="stylesheet">
+</head>
+
+<body>
+    <div class="wrapper">
+        <form method='post' action=''>
+            <h1>Fill out this awesome form</h1>
+            <fieldset>
+                <h3>Your details</h3>
+                <p>
+                    <label class='label' for='email'>
+                        Email
+                    </label>
+                    <input type="email" name="email" required>
+                </p>
+                <p>
+                    <label class='label' for='password'>
+                        Password
+                    </label>
+                    <input class='password' type='password' id='password' name='password' minlength="8" required>
+                </p>
+            </fieldset>
+
+            <fieldset>
+                <h3>Your animal</h3>
+                <p>
+                    <label class='label' for='colour'>
+                        Colour
+                    </label>
+                    <select name='colour' id='colour' required>
+                        <option value=''>Choose colour</option>
+                        <option value='blue'>Blue</option>
+                        <option value='green'>Green</option>
+                        <option value='red'>Red</option>
+                        <option value='black'>Black</option>
+                        <option value='brown'>Brown</option>
+                    </select>
+                </p>
+                <p>
+                    <span class="label">
+                        Animal
+                    </span>
+
+                    <input type='checkbox' name='animals' value='bear' id='bear'>
+                    <label for='bear'>
+                        Bear
+                    </label>
+
+                    <input type='checkbox' name='animals' value='tiger' id='tiger'>
+                    <label for='tiger'>
+                        Tiger
+                    </label>
+
+                    <input type='checkbox' name='animals' value='snake' id='snake'>
+                    <label for='snake'>
+                        Snake
+                    </label>
+
+                    <input type='checkbox' name='animals' value='donkey' id='donkey'>
+                    <label for='donkey'>
+                        Donkey
+                    </label>
+                    <span id="custom-error"></span>
+                </p>
+                <p>
+                    <label class='label' for='tiger_type'>
+                        Type of tiger
+                    </label>
+                    <input type='text' name='tiger_type' id='tiger_type' data-validation="required" data-validation-depends-on="animal" data-validation-depends-on-value="tiger">
+                </p>
+            </fieldset>
+            <fieldset>
+                <p>
+                    <input type='submit' value='Create account'>
+                </p>
+            </fieldset>
+        </form>
+    </div>
+</body>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.17.0/jquery.validate.min.js"></script>
+
+
+<script>
+
+    // I have used https://jqueryvalidation.org/documentation/ in combination with JQUery to add the extra functionality to the HTML5 validation
+    // Although it might be overkill to use a whole library in this case, it's a more pragmatic approach in terms of time vs result, and form validation is an acceptably 
+    // finicky use case to bring in a library
+
+    $(document).ready(function () {
+         $.validator.addMethod('animalCheck', function (value, ele) {
+            return $("input:checked").length >= 2;
+        }, 'Please choose two or more animals');          
+
+        $('form').validate({
+
+             highlight: function (element, errorClass, validClass) {
+                $(element).closest('p').addClass(errorClass).removeClass(validClass);
+            },
+
+            unhighlight: function (element, errorClass, validClass) {
+                $(element).closest('p').removeClass(errorClass).addClass(validClass);
+            },
+
+            errorPlacement: function (error, element) {
+                error.appendTo(element.parent("p"));
+            },
+
+            rules: {
+                tiger_type: {
+                    required: "#tiger:checked"
+                },
+
+                animals: {
+                   animalCheck: true
+                }
+            }
+        });
+    });
+
+</script>
+</html>
